@@ -1,9 +1,44 @@
+<template>
+	<div class="home-view">
+		<header class="header">
+			<HomeMenu :list="menuList" />
+		</header>
+		<main class="main">
+			<h1>Welcome to Task Manager App!</h1>
+		</main>
+	</div>
+</template>
+
 <script setup>
-import TheWelcome from '../components/TheWelcome.vue'
+import HomeMenu from '../components/HomeMenu.vue';
+
+const menuList = [
+	{
+		id: 1,
+		text: 'Tasks List',
+		routeName: 'tasksList',
+	},
+];
 </script>
 
-<template>
-  <main>
-    <TheWelcome />
-  </main>
-</template>
+<style scoped lang="scss">
+.home-view {
+	display: flex;
+	flex-direction: column;
+}
+
+.header {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 70px;
+	background-color: #fff;
+}
+
+.main {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding-top: 100px;
+}
+</style>
