@@ -10,23 +10,26 @@
 	</div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type { Task } from '@/types';
 import TaskCard from '@/components/TaskCard.vue';
 
-const props = defineProps({
-	list: {
-		type: Array,
-		default: () => [],
-	},
-});
+interface Props {
+	list?: Task[] | [],
+}
+interface Emits {
+	(e: 'edit-task', id: number): void,
+	(e: 'delete-task', id: number): void,
+}
+const props = defineProps<Props>();
 
-const emit = defineEmits(['edit-task', 'delete-task']);
+const emit = defineEmits<Emits>();
 
-const onEdit = (id) => {
+const onEdit = (id: number) => {
 	emit('edit-task', id);
 };
 
-const onDelete = (id) => {
+const onDelete = (id: number) => {
 	emit('delete-task', id);
 };
 </script>

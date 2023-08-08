@@ -7,21 +7,16 @@
 </UiModal>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type { Task } from '@/types';
 import UiModal from '@/components/ui/UiModal.vue';
 import FormEditTask from '@/components/forms/FormEditTask.vue';
 
-const props = defineProps({
-	card: {
-		type: Object,
-		default: () => {},
-	},
-
-	isOpen: {
-		type: Boolean,
-		default: false,
-	},
-});
+interface Props {
+	card: Task,
+	isOpen?: boolean,
+}
+const props = defineProps<Props>();
 </script>
 
 <style scoped lang="scss">

@@ -23,18 +23,22 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type { Task } from '@/types';
 import IconEdit from './icons/IconEdit.vue';
 import IconTrashBin from '@/components/icons/IconTrashBin.vue';
 
-const props = defineProps({
-	card: {
-		type: Object,
-		default: () => {},
-	},
-});
+interface Props {
+	card: Task,
+}
 
-const emit = defineEmits(['edit', 'delete']);
+interface Emits {
+	(e: 'edit', id: number): void,
+	(e: 'delete', id: number): void,
+}
+
+const props = defineProps<Props>();
+const emit = defineEmits<Emits>();
 
 const rows = [
 	{

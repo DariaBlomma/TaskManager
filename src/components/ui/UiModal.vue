@@ -13,21 +13,22 @@
 	</div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import IconCross from '@/components/icons/IconCross.vue';
 
-const props = defineProps({
-	isOpen: {
-		type: Boolean,
-		default: false,
-	},
-});
+interface Props {
+	isOpen?: boolean,
+}
 
-const emit = defineEmits(['close']);
+interface Emits {
+	(e: 'close'): void,
+}
+const props = defineProps<Props>();
+
+const emit = defineEmits<Emits>();
 const handleCrossClick = () => {
 	emit('close');
 };
-
 </script>
 <style scoped lang="scss">
 .modal {

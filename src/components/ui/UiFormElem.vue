@@ -7,7 +7,7 @@
 	<UiInput
 			:name="name"
 			:type="type"
-			:value="value"
+			:value="fieldValue"
 			:validation-listeners="validationListeners"
 	/>
 	<span class="error-message">{{ errorMessage }}</span>
@@ -16,7 +16,7 @@
 </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {
 	computed,
 	onMounted,
@@ -26,52 +26,47 @@ import {
 } from 'vue';
 import UiInput from '@/components/ui/UiInput.vue';
 import { checkIsRequired, checkStringLength, checkMinNumber, checkMaxNumber } from '@/helpers';
-/*
-validators = {
-	isRequired: false,
-	min: 0,
-	max: 0,
-	minLength: 0,
-	maxLength: 0,
-	customValidator: (value) => error;
-}
- */
+import type { Field, FormElemType, Validators, StringLengthCondition, FormCtx } from '@/types';
 
-const props = defineProps({
-	label: {
-		type: String,
-		default: '',
-	},
-	type: {
-		type: String,
-		default: 'text',
-	},
-	name: {
-		type: String,
-		required: true,
-	},
-	value: {
-		type: String,
-		default: '',
-	},
-	validators: {
-		type: Object,
-		default: {
-			isRequired: false,
-		},
-	},
+// todo: подумать над объединением TextFieldValidator, NumberFieldValidator, парамтерами fn
+interface TextFieldValidator {
+	validator?: number, //any value from Validators
+	fn: (val: string, length: number, condition: StringLengthCondition) => string, //returns error message
+	lengthCondition: StringLengthCondition,
+}
+
+interface NumberFieldValidator {
+	validator?: number, //any value from Validators
+	fn: (val: number, restriction: number) => string, //returns error message
+}
+
+
+interface Props {
+	label?: string,
+	type?: FormElemType,
+	name: string,
+	value?: string,
+	validators?: Validators,
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	type: 'text',
+	validators: () => ({
+		isRequired: false,
+	}),
 });
 
 const {
-	label, type, name, validators,
+	label, type, name, value,  validators,
 } = reactive(props);
 
-const form = inject('form');
+const form = inject('form') as FormCtx;
 
 const errorMessage = ref('');
-const value = ref(props.value);
 
-const textFieldValidators = [
+const fieldValue = ref(value || '');
+
+const textFieldValidators: TextFieldValidator[] = [
 	{
 		validator: validators.maxLength,
 		fn: checkStringLength,
@@ -84,7 +79,7 @@ const textFieldValidators = [
 	},
 ];
 
-const numberValidators = [
+const numberValidators: NumberFieldValidator[] = [
 	{
 		validator: validators.min,
 		fn: checkMinNumber,
@@ -96,28 +91,29 @@ const numberValidators = [
 ];
 
 onMounted(() => {
-	form.setFieldValue(name, value.value);
+	form.setFieldValue(name, fieldValue.value);
 	form.setErrors({
 		name,
 		error: errorMessage.value,
-	});
+	} as Field);
 });
 
-const handleChange = (e, shouldValidate = true) => {
+const handleChange = (e: Event, shouldValidate = true) => {
 	if (!shouldValidate) return;
 	const inputClass = '.native-input';
-	const val = e.target.closest(inputClass).value.trim();
-	value.value = val;
+	const target = e.target as HTMLElement;
+	const val = (target?.closest(inputClass) as HTMLFormElement).value.trim() || '';
+	fieldValue.value = val;
 	validate(val);
-	form.setFieldValue(name, value.value);
+	form.setFieldValue(name, fieldValue.value);
 	form.setIsTouched(true);
 	form.setErrors({
 		name,
 		error: errorMessage.value,
-	});
+	} as Field);
 };
 
-const validate = (val) => {
+const validate = (val: string) => {
 	if (validators.isRequired) {
 		const error = checkIsRequired(val);
 		errorMessage.value = error;
@@ -160,7 +156,7 @@ const validationListeners = computed(() => {
 		return {
 			blur: handleChange,
 			change: handleChange,
-			input: (e) => handleChange(e, false),
+			input: (e: Event) => handleChange(e, false),
 		};
 	}
 	return {

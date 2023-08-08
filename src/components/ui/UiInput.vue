@@ -11,24 +11,18 @@
 	</div>
 </template>
 
-<script setup>
-const props = defineProps({
-	type: {
-		type: String,
-		default: 'text',
-	},
-	name: {
-		type: String,
-		required: true,
-	},
-	value: {
-		type: String,
-		default: '',
-	},
-	validationListeners: {
-		type: Object,
-		default: () => {},
-	},
+<script setup lang="ts">
+import type { ValidationListeners, FormElemType } from '@/types';
+
+interface Props {
+	type?: FormElemType,
+	name: string,
+	value?: string,
+	validationListeners?: ValidationListeners,
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	type: 'text',
 });
 </script>
 

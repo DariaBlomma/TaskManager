@@ -35,17 +35,14 @@
   </svg>
 </template>
 
-<script setup>
-const props = defineProps({
-	width: {
-		type: Number,
-		default: 40,
-	},
-
-	height: {
-		type: Number,
-		default: 40,
-	},
+<script setup lang="ts">
+interface Props {
+	width?: number,
+	height?: number,
+}
+const props = withDefaults(defineProps<Props>(), {
+	width: 40,
+	height: 40,
 });
 </script>
 

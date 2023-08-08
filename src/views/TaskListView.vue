@@ -19,13 +19,14 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type { Task } from '@/types';
 import { ref } from 'vue';
 import TaskList from '@/components/TaskList.vue';
 import UiButton from '@/components/ui/UiButton.vue';
 import ModalEditTask from '@/components/ModalEditTask.vue';
 
-const taskList = [
+const taskList: Task[] = [
 	{
 		id: 1,
 		title: 'Name 1',
@@ -44,14 +45,19 @@ const taskList = [
 ];
 
 const isModalOpen = ref(false);
-const chosenTask = ref({});
+const chosenTask = ref<Task>(taskList[0]);
 
-const onEditTask = (id) => {
+const onEditTask = (id: number) => {
 	isModalOpen.value = true;
-	chosenTask.value = taskList.find(elem => elem.id === id);
+	const chosenElem = taskList.find(elem => elem.id === id);
+	if (!chosenElem) {
+		console.error('onEditTask - no match found');
+		return;
+	}
+	chosenTask.value = chosenElem;
 };
 
-const onDeleteTask = (id) => {
+const onDeleteTask = (id: number) => {
 	console.log('on delete task', id);
 	//open dialog confirm
 };

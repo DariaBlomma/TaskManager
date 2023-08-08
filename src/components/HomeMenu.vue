@@ -10,13 +10,13 @@
 	</nav>
 </template>
 
-<script setup>
-const props = defineProps({
-	list: {
-		type: Array,
-		default: () => [],
-	},
-});
+<script setup lang="ts">
+import type { MenuItem } from '@/types';
+
+interface Props {
+	list?: MenuItem[] | [],
+}
+const props = defineProps<Props>();
 </script>
 
 <style scoped>

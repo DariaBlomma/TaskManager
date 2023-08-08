@@ -9,27 +9,18 @@
 </button>
 </template>
 
-<script setup>
-const props = defineProps({
-	text: {
-		type: String,
-		default: '',
-	},
-	type: {
-		type: String,
-		default: 'button',
-	},
-	/**
-	 * @property {'default'}
-	 */
-	theme: {
-		type: String,
-		default: '',
-	},
-	isDisabled: {
-		type: Boolean,
-		default: false,
-	},
+<script setup lang="ts">
+type Theme = 'default';
+
+interface Props {
+	text?: string,
+	type?: 'button' | 'submit',
+	theme?: Theme,
+	isDisabled?: boolean,
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	theme: 'default',
 });
 </script>
 

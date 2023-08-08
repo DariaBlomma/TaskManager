@@ -9,10 +9,11 @@
 	</div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type { MenuItem } from '@/types';
 import HomeMenu from '../components/HomeMenu.vue';
 
-const menuList = [
+const menuList: MenuItem[] = [
 	{
 		id: 1,
 		text: 'Tasks List',

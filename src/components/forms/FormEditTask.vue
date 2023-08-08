@@ -36,18 +36,17 @@
 	</form>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { computed } from 'vue';
 import { useForm } from '@/components/composables/useForm';
+import type { Task } from '@/types';
 import UiFormElem from '@/components/ui/UiFormElem.vue';
 import UiButton from '@/components/ui/UiButton.vue';
 
-const props = defineProps({
-	card: {
-		type: Object,
-		default: () => {},
-	},
-});
+interface Props {
+	card: Task,
+}
+const props = defineProps<Props>();
 
 const { formCtx } = useForm();
 
